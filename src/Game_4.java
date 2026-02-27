@@ -84,9 +84,7 @@ public class Game_4 {
             i++;
             if (dealerTotal>17 && dealerTotal<=21) return;
             if (dealerTotal>21) {
-                System.out.println("BUST!");
                 bust = true;
-                dealerTotal = -1;
             }
         }
     }
