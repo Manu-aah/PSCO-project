@@ -3,59 +3,42 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class File_Handling {
+    private String path = "src/Player_Data.txt";
 
-    public void saveToFile() throws IOException {
-        Player.setLastPlayed(LocalDateTime.now());
-        FileWriter writer =  new FileWriter("src/Player_Data.txt");
-        writer.write(Player.getUsername() + "," + Player.getPoints() + "," + Player.numberOfGamesPlayed + "," + Player.lastPlayed);
+    public void saveData(Player player) throws IOException {
+        player.setLastPlayed(LocalDateTime.now());
+        FileWriter writer = new FileWriter(path);
+        writer.write(player.getUsername() + "," + player.getPoints() + "," + player.getNumberOfGamesPlayed() + "," + player.getLastPlayedFormatted());
 
-        for (int score : Player.highestScore) {
+        for (int score : player.getHighestScore()) {
             writer.write("," + score);
         }
-
-        for (int score : Player.recentScore) {
+        for (int score : player.getRecentScore()) {
             writer.write("," + score);
         }
         writer.write("\n");
         writer.close();
     }
 
-    public void loadFromFile() throws IOException {
-        File file = new File("src/Player_Data.txt");
-
-        if (!file.exists()) {
-            return;
-        }
-       BufferedReader reader = new BufferedReader(new FileReader(file));
-
+    public void loadData(Player player) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(path));
         String line = reader.readLine();
-        reader.close();
+        String[] lineDat = line.split(",");
+        player.setUsername(lineDat[0]);
+        player.setPoints(Integer.parseInt(lineDat[1]));
+        player.setNumberOfGamesPlayed(Integer.parseInt(lineDat[2]));
+        player.setLastPlayed(LocalDateTime.parse(lineDat[3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-        if (line == null) return;
-
-        String[] data = line.split(",");
-
-        if (!data[0].equals(Player.getUsername())) {
-            throw new IllegalStateException("Player data does not match"); // Because we're using the player name as a header for the data we need to check if it matches.
+        int j = 4;
+        int[] highest = player.getHighestScore();
+        for (int i = 0; i < highest.length; i++) {
+            highest[i] = Integer.parseInt(lineDat[j++]);
         }
-        Player.setPoints(Integer.parseInt(data[1]));
-        Player.lastPlayed = LocalDateTime.parse(data[2]);
-
-        int index = 3;
-        for (int i = 0; i < Player.highestScore.length; i++) {
-            Player.highestScore[i] = Integer.parseInt(data[index++]);
-        }
-        for (int i = 0; i < Player.recentScore.length; i++) {
-            Player.recentScore[i] = Integer.parseInt(data[index++]);
+        int[] recent = player.getRecentScore();
+        for (int i = 0; i < recent.length; i++) {
+            recent[i] = Integer.parseInt(lineDat[j++]);
         }
     }
 
-    public String getLastPlayedFormatted() {
-        if (Player.lastPlayed == null) {
-            return "Never played";
-        }
-        DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
-        return Player.lastPlayed.format(formatter);
-    }
 }
+

@@ -1,72 +1,88 @@
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.time.format.DateTimeFormatter;
 
 public class Player {
-    private static String username ;
-    private static int points;
-    public static int[] highestScore = new int[4];
-    public static int[] recentScore = new int[4];
-    public static int numberOfGamesPlayed;
-    public static LocalDateTime lastPlayed;
 
-    public Player(String Username) {
-        username = Username;
-        points = 10;
-        numberOfGamesPlayed = 0;
-        for (int i : highestScore) {
-            highestScore[i] = 0;
-        }
-        for (int i : recentScore) {
-            recentScore[i] = 0;
-        }
+    private String username;
+    private int points;
+    private int[] highestScore = new int[4];
+    private int[] recentScore = new int[4];
+    private int numberOfGamesPlayed;
+    private LocalDateTime lastPlayed;
+
+    public Player(String username) {
+        this.username = username;
+        this.points = 10;
+        this.numberOfGamesPlayed = 0;
+        Arrays.fill(highestScore, 0); // simpler to write this instead of using a for loop for both scores **the Arrays class needed to be imported for this method
+        Arrays.fill(recentScore, 0);
     }
 
-    public static String getUsername() {
+    public String getUsername() {
         return username;
     }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public static int getPoints() {
+    public int getPoints() {
         return points;
     }
 
-    public static int[] getHighestScore() {
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int[] getHighestScore() {
         return highestScore;
     }
 
-    public static int[] getRecentScore() {
+    public void setHighestScore(int[] highestScore) {
+        this.highestScore = highestScore;
+    }
+
+    public int[] getRecentScore() {
         return recentScore;
     }
 
-    public static int getNumberOfGamesPlayed() {
+    public void setRecentScore(int[] recentScore) {
+        this.recentScore = recentScore;
+    }
+
+    public int getNumberOfGamesPlayed() {
         return numberOfGamesPlayed;
     }
 
-    public static LocalDateTime getLastPlayed() {
+    public void setNumberOfGamesPlayed(int numberOfGamesPlayed) {
+        this.numberOfGamesPlayed = numberOfGamesPlayed;
+    }
+
+    public LocalDateTime getLastPlayed() {
         return lastPlayed;
     }
 
-    public static void setPoints(int Points) {
-        points = Points;
+    public void addPoints(int amount) {
+        points += amount;
+    }
+    public void removePoints(int amount) {
+        points -= amount;
+        if (points < 0) points = 0;
     }
 
-    public static void setHighestScore(int[] HighestScore) {
-        highestScore = HighestScore;
+    public void setLastPlayed(LocalDateTime lastPlayed) {
+        this.lastPlayed = lastPlayed;
     }
 
-    public static void setRecentScore(int[] RecentScore) {
-        recentScore = RecentScore;
+
+    public String getLastPlayedFormatted() {
+        if (lastPlayed == null) {
+            return "Player has not played yet.";
+        }
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("mm:ss/dd/MM/yyyy");
+        return lastPlayed.format(formatter);
     }
 
-    public static void setNumberOfGamesPlayed(int NumberOfGamesPlayed) {
-        numberOfGamesPlayed = NumberOfGamesPlayed;
-    }
-
-    public static void setLastPlayed(LocalDateTime LastPlayed) {
-        lastPlayed = LastPlayed;
-    }
-
-    public void getUserData(){
-        System.out.println("Username: "+ username + "Points: "+ points + "numberOfGamesPlayed: " + numberOfGamesPlayed+ "LastPlayed: "+ lastPlayed+
-                "HighestScore1: "+ highestScore[0] + "HighestScore2: "+ highestScore[1] + "HighestScore3: "+ highestScore[2] + "HighestScore4: "+ highestScore[3]);
-
-    }
 }
