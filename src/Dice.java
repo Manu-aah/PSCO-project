@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public abstract class Dice {
+public class Dice {
     Random random = new Random();
     int total;
 
