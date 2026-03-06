@@ -1,7 +1,6 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.time.format.DateTimeFormatter;
 
 public class Player {
 
@@ -75,13 +74,20 @@ public class Player {
         this.lastPlayed = lastPlayed;
     }
 
+    public void updateScores(int gameIndex, int score) {
+        if (gameIndex < 0 || gameIndex > 3) return;
+        recentScore[gameIndex] = score;
+        if (score > highestScore[gameIndex]) {
+            highestScore[gameIndex] = score;
+        }
+    }
 
     public String getLastPlayedFormatted() {
         if (lastPlayed == null) {
             return "Player has not played yet.";
         }
         DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("mm:ss/dd/MM/yyyy");
+                DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         return lastPlayed.format(formatter);
     }
 
