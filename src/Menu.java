@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -7,6 +8,17 @@ public class Menu {
         System.out.println("WELCOME TO THE GAME!!! \n Please enter your username:");
         String username = scanner.nextLine();
         Player player = new Player(username);
+        File_Handling fileHandling = new File_Handling();
+        try {
+            if (fileHandling.playerExists(username)) {
+                fileHandling.loadData(player);
+                System.out.println("Welcome back, " + username + "! Your data has been loaded.");
+            } else {
+                System.out.println("Welcome, " + username + "! Starting fresh.");
+            }
+        } catch (IOException e) {
+            System.out.println("Could not load player data: " + e.getMessage());
+        }
         int choice;
 
         do {
@@ -50,6 +62,11 @@ public class Menu {
                     int stake = scanner.nextInt();
                     Game_4 game4 = new Game_4(stake,player);
                     game4.playGame(scanner);
+                    try {
+                        fileHandling.saveData(player);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
 
                 case 5:
@@ -74,4 +91,5 @@ public class Menu {
 
         } while (choice != 0);
         scanner.close();
-    }}
+    }
+}

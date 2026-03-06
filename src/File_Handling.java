@@ -1,44 +1,114 @@
-import java.io.*; //
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class File_Handling {
     private String path = "src/Player_Data.txt";
 
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
     public void saveData(Player player) throws IOException {
         player.setLastPlayed(LocalDateTime.now());
-        FileWriter writer = new FileWriter(path);
-        writer.write(player.getUsername() + "," + player.getPoints() + "," + player.getNumberOfGamesPlayed() + "," + player.getLastPlayedFormatted());
+        String updatedLine = buildLine(player);
 
-        for (int score : player.getHighestScore()) {
-            writer.write("," + score);
+        File file = new File(path);
+        List<String> lines = new ArrayList<>();
+        boolean found = false;
+
+        // Read existing lines if the file already exists
+        if (file.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.isBlank()) {
+                    String existingUsername = line.split(",")[0];
+                    if (existingUsername.equals(player.getUsername())) {
+                        lines.add(updatedLine); //replace this players line
+                        found = true;
+                    } else {
+                        lines.add(line);        //keep all other players
+                    }
+                }
+            }
+            reader.close();
         }
-        for (int score : player.getRecentScore()) {
-            writer.write("," + score);
+
+        if (!found) {
+            lines.add(updatedLine); //new player
         }
-        writer.write("\n");
+
+        // Write all lines back
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
+        for (String line : lines) {
+            writer.write(line);
+            writer.newLine();
+        }
         writer.close();
     }
 
+    //Loads data for the given player by matching their username in the file
     public void loadData(Player player) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(path));
-        String line = reader.readLine();
-        String[] lineDat = line.split(",");
-        player.setUsername(lineDat[0]);
-        player.setPoints(Integer.parseInt(lineDat[1]));
-        player.setNumberOfGamesPlayed(Integer.parseInt(lineDat[2]));
-        player.setLastPlayed(LocalDateTime.parse(lineDat[3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            if (line.isBlank()) continue;
+            String[] data = line.split(",");
+
+            if (data[0].equals(player.getUsername())) {
+                reader.close();
+                parseLine(data, player);
+                return;
+            }
+        }
+
+        reader.close();
+        throw new IllegalArgumentException("No saved data found for username: " + player.getUsername());
+    }
+
+    //Checks whether a username already has a saved line in the file
+    public boolean playerExists(String username) throws IOException {
+        File file = new File(path);
+        if (!file.exists()) return false;
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (!line.isBlank() && line.split(",")[0].equals(username)) {
+                reader.close();
+                return true;
+            }
+        }
+        reader.close();
+        return false;
+    }
+
+    private String buildLine(Player player) {
+        String line = player.getUsername() + "," + player.getPoints() + "," + player.getNumberOfGamesPlayed() + "," + player.getLastPlayedFormatted();
+
+        for (int score : player.getHighestScore()) {line += "," + score;
+        }
+        for (int score : player.getRecentScore()) {line += "," + score;
+        }
+        return line;
+    }
+
+    //Parses a split CSV line back into a Player object
+    private void parseLine(String[] data, Player player) {
+        player.setPoints(Integer.parseInt(data[1]));
+        player.setNumberOfGamesPlayed(Integer.parseInt(data[2]));
+        player.setLastPlayed(LocalDateTime.parse(data[3], FORMATTER));
 
         int j = 4;
         int[] highest = player.getHighestScore();
         for (int i = 0; i < highest.length; i++) {
-            highest[i] = Integer.parseInt(lineDat[j++]);
+            highest[i] = Integer.parseInt(data[j++]);
         }
         int[] recent = player.getRecentScore();
         for (int i = 0; i < recent.length; i++) {
-            recent[i] = Integer.parseInt(lineDat[j++]);
+            recent[i] = Integer.parseInt(data[j++]);
         }
     }
-
 }
-
