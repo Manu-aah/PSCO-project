@@ -1,5 +1,4 @@
 
-import java.util.ArrayList;
 import java.util.Scanner;
 public class Game_2 {
     private final int[][] grid = new int[3][3];
@@ -16,15 +15,16 @@ public class Game_2 {
         System.out.println("Roll dices to fill the grid,");
         System.out.println("Scoring: 3 of a kind = 15pt, Straight = 12pt,\nPair = 8pt, and All Different = 5");
 
-        while (!isFull()) {
+        while (!isFull()) { //while is not full print grid
             printGrid();
-            int roll = 0;
-            System.out.println("Roll dices to fill the grid, Press any integer to roll:");
-            while (!isFull()) {
+            int roll = 0; //initialize as 0
+            System.out.println("Roll dices to fill the grid, Press any integer to roll:");           while (!isFull()) {
                 while (scanner.hasNextInt()) {
-                    roll = dice.rollDice(1);
+                    roll = dice.rollDice(1); //roll 1 dice for each integer
                     System.out.println("You rolled: " + roll);
+                    scanner.nextLine();
                 }}}}
+
 
         private int scoreLine(int a, int b, int c) {
 
@@ -40,9 +40,9 @@ public class Game_2 {
                 pattern = 1;
             } else {
                 // straight
-                int min = Math.min(a, Math.min(b, c));
+                int min = Math.min(a, Math.min(b, c)); //compares min max
                 int max = Math.max(a, Math.max(b, c));
-                if (max - min == 2 &&
+                if (max - min == 2 && //pattern matching
                         freq[min] == 1 &&
                         freq[min + 1] == 1 &&
                         freq[min + 2] == 1) {
@@ -54,7 +54,7 @@ public class Game_2 {
                 }
             }
 
-            switch (pattern) {
+            switch (pattern) { //base cases, if it matches the pattern's integer value, printing & adding points
                 case 1:
                     System.out.println("Three of a Kind! (15pts)");
                     player.addPoints(15);
@@ -80,17 +80,17 @@ public class Game_2 {
 
     public boolean isFull() {
         for (int[] row : grid) {
-            for (int v : row) {
+            for (int v : row) { //check if its full, a 0 means empty
                 if (v == 0) return false;
             }
         }
         return true;
     }
-
+    
     private void printGrid() {
         System.out.println("\nCurrent Grid:"); //i is for rows and c is for columns
         for (int i = 0; i < 3; i++) {
-            System.out.print("| ");
+            System.out.print("| "); //formatting of grid
             for (int j = 0; j < 3; j++) {
                 System.out.print(grid[i][j] + " ");
             }
