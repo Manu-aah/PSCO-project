@@ -18,19 +18,19 @@ public class Game_4 {
         dealersDice = new ArrayList<>();
     }
 
-    public int playGame(Scanner scanner) {
+    public void playGame(Scanner scanner) {
 
         //stake is deducted before the game starts
         if (player.getPoints() < stake) {
             System.out.println("Not enough points to play! You need " + stake + " points but have " + player.getPoints());
-            return 0;
+            return;
         }
         player.removePoints(stake);
         System.out.println("Stake of " + stake + " deducted. Points remaining: "
                 + player.getPoints());
 
         //initial deal
-        System.out.println("\n=== BLACKJACK ===");
+        System.out.println("\n---- BLACKJACK ----");
         System.out.println("Rolling dice...");
         playerDice.add(dice.rollDice(1));
         playerDice.add(dice.rollDice(1));
@@ -64,7 +64,8 @@ public class Game_4 {
 
                 if (playerTotal > 21) {
                     System.out.println("BUST! YOU LOSE!!!");
-                    return resolveResult(-stake);
+                    resolveResult(-stake);
+                    return;
                 }
 
             } else if (choice == 2) {
@@ -73,19 +74,23 @@ public class Game_4 {
 
                 if (dealerTotal > 21) {
                     System.out.println("DEALER BUST! YOU WIN! (+" + stake + ")");
-                    return resolveResult(stake);
+                    resolveResult(stake);
+                    return;
                 } else if (playerTotal > dealerTotal) {
                     System.out.println("YOU WIN! Your " + playerTotal
                             + " beats dealer's " + dealerTotal + ". (+" + stake + ")");
-                    return resolveResult(stake);
+                    resolveResult(stake);
+                    return;
                 } else if (dealerTotal > playerTotal) {
                     System.out.println("YOU LOSE! Dealer's " + dealerTotal
                             + " beats your " + playerTotal + ". (-" + stake + ")");
-                    return resolveResult(-stake);
+                    resolveResult(-stake);
+                    return;
                 } else {
                     System.out.println("TIE! Both scored " + playerTotal
                             + ". Stake returned.");
-                    return resolveResult(0);
+                    resolveResult(0);
+                    return;
                 }
 
             } else {

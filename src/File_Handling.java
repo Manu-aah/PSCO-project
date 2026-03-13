@@ -28,7 +28,7 @@ public class File_Handling {
                         lines.add(updatedLine); //replace this players line
                         found = true;
                     } else {
-                        lines.add(line);        //keep all other players
+                        lines.add(line); //keep all other players
                     }
                 }
             }
@@ -88,14 +88,16 @@ public class File_Handling {
     private String buildLine(Player player) {
         String line = player.getUsername() + "," + player.getPoints() + "," + player.getNumberOfGamesPlayed() + "," + player.getLastPlayedFormatted();
 
-        for (int score : player.getHighestScore()) {line += "," + score;
+        for (int score : player.getHighestScore()) {
+            line += "," + score;
         }
-        for (int score : player.getRecentScore()) {line += "," + score;
+        for (int score : player.getRecentScore()) {
+            line += "," + score;
         }
         return line;
     }
 
-    //Parses a split CSV line back into a Player object
+    //Parses a split CSV line back into the Player object
     private void parseLine(String[] data, Player player) {
         player.setPoints(Integer.parseInt(data[1]));
         player.setNumberOfGamesPlayed(Integer.parseInt(data[2]));

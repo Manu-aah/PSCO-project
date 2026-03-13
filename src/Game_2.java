@@ -11,7 +11,7 @@ public class Game_2 {
         this.dice = new Dice();
     }
     public void play(Scanner scanner) {
-        System.out.println("== Dice Grid Puzzle ==");
+        System.out.println("---- Dice Grid Puzzle ----");
         System.out.println("Grid fills automatically row-wise.");
         System.out.println("Scoring:");
         System.out.println("3 of a kind = 15pts");
