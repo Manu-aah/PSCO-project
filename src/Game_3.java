@@ -98,12 +98,11 @@ public class Game_3 {
 
         if (!guessed) {
             System.out.print("You failed! The code was: ");
-
             for (int num : secretCode) {
                 System.out.print(num + " ");
             }
-
             System.out.println();
+            player.updateScores(2, 0); // score of 0 for a failed attempt
         }
 
         player.setNumberOfGamesPlayed(player.getNumberOfGamesPlayed() + 1);

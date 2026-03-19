@@ -43,6 +43,11 @@ public class Menu {
                     System.out.println("Starting Game 1.");
                     Game_1 game1 = new Game_1(player);
                     game1.playGame(scanner);
+                    try {
+                        fileHandling.saveData(player);
+                    } catch (IOException e) {
+                        System.out.println("Error saving data: " + e.getMessage());
+                    }
                     break;
 
                 case 2:
