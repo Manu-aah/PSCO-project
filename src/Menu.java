@@ -24,10 +24,10 @@ public class Menu {
         do {
             // Display Menu
             System.out.println("------ || GAME MENU ||------");
-            System.out.println("1. Game 1");
-            System.out.println("2. Game 2");
-            System.out.println("3. Game 3");
-            System.out.println("4. Game 4 - Dice Blackjack");
+            System.out.println("1. Game 1- DICE PATTERNS CHALLENGE");
+            System.out.println("2. Game 2 - DICE GRID PUZZLE");
+            System.out.println("3. Game 3 - DICE CODEBREAKER");
+            System.out.println("4. Game 4 - DICE BLACKJACK");
             System.out.println("5. View player info");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
