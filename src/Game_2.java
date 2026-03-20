@@ -37,13 +37,12 @@ public class Game_2 {
         printGrid();
         int pointsBeforeGame = player.getPoints();
         calculateScore();
-        int pointsEarnedThisRound = player.getPoints() - pointsBeforeGame;
+        int pointsEarnedThisRound = player.getPoints() - pointsBeforeGame;  // diff = round earnings
         System.out.println("\nGame finished!");
-        System.out.println("Points earned this round: " + pointsEarnedThisRound);
+        System.out.println("Points earned this round: " + pointsEarnedThisRound);  // round points
         System.out.println("Total points: " + player.getPoints());
         player.setNumberOfGamesPlayed(player.getNumberOfGamesPlayed() + 1);
         player.setLastPlayed(LocalDateTime.now());
-        player.updateScores(1, pointsEarnedThisRound);
     }
     private void calculateScore() {
         System.out.println("\nChecking rows...");
@@ -96,6 +95,7 @@ public class Game_2 {
         }
         return true;
     }
+
     private void printGrid() {
 
         System.out.println("\nCurrent Grid:");
@@ -109,4 +109,3 @@ public class Game_2 {
         }
     }
 }
-

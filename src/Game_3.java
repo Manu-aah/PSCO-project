@@ -1,43 +1,111 @@
-import java.util.Scanner;
+import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Game_3 {
 
-    public static void main(String[] args) {
+    private Player player;
+    private Random rand = new Random();
+    private final int MAX_ATTEMPTS = 10;
 
-        Scanner input = new Scanner(System.in);
-        Random rand = new Random();
+    public Game_3(Player player) {
+        this.player = player;
+    }
+
+    public void playGame(Scanner scanner) {
 
         int[] secretCode = new int[4];
-        int[] guess = new int[4];
 
-        // Generate random code (numbers 1-6)
         for (int i = 0; i < 4; i++) {
             secretCode[i] = rand.nextInt(6) + 1;
         }
-
-        System.out.println("Welcome to Dice Codebreaker!");
+        System.out.println("\n---- DICE CODEBREAKER ----");
         System.out.println("Guess the 4 dice numbers (1-6)");
+        System.out.println("You have " + MAX_ATTEMPTS + " attempts.");
 
-        // Player enters guess
-        System.out.println("Enter 4 numbers:");
+        boolean guessed = false;
 
-        for (int i = 0; i < 4; i++) {
-            guess[i] = input.nextInt();
-        }
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 
-        int correctPosition = 0;
+            int[] guess = new int[4];
 
-        // Check correct number in correct position
-        for (int i = 0; i < 4; i++) {
-            if (guess[i] == secretCode[i]) {
-                correctPosition++;
+            System.out.println("\nAttempt " + attempt);
+            System.out.print("Enter 4 numbers separated by spaces: ");
+
+            for (int i = 0; i < 4; i++) {
+
+                while (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input. Enter numbers 1-6.");
+                    scanner.next();
+                }
+
+                guess[i] = scanner.nextInt();
+
+                if (guess[i] < 1 || guess[i] > 6) {
+                    System.out.println("Numbers must be between 1 and 6.");
+                    i--;
+                }
+            }
+
+            scanner.nextLine(); // clear newline
+
+            int correctPosition = 0;
+            int correctNumberWrongPlace = 0;
+
+            boolean[] secretUsed = new boolean[4];
+            boolean[] guessUsed = new boolean[4];
+
+            for (int i = 0; i < 4; i++) {
+
+                if (guess[i] == secretCode[i]) {
+                    correctPosition++;
+                    secretUsed[i] = true;
+                    guessUsed[i] = true;
+                }
+            }
+
+            for (int i = 0; i < 4; i++) {
+
+                if (guessUsed[i]) continue;
+
+                for (int j = 0; j < 4; j++) {
+
+                    if (!secretUsed[j] && guess[i] == secretCode[j]) {
+                        correctNumberWrongPlace++;
+                        secretUsed[j] = true;
+                        break;
+                    }
+                }
+            }
+
+            System.out.println("Correct number & position: " + correctPosition);
+            System.out.println("Correct number but wrong position: " + correctNumberWrongPlace);
+
+            if (correctPosition == 4) {
+
+                System.out.println("You cracked the code!");
+
+                int score = (MAX_ATTEMPTS - attempt + 1) * 5;
+                System.out.println("Score earned: " + score);
+
+                player.addPoints(score);
+                player.updateScores(2, score);
+
+                guessed = true;
+                break;
             }
         }
 
-        // Show result
-        System.out.println("Numbers correct and in correct position: " + correctPosition);
+        if (!guessed) {
+            System.out.print("You failed! The code was: ");
+            for (int num : secretCode) {
+                System.out.print(num + " ");
+            }
+            System.out.println();
+            player.updateScores(2, 0); // score of 0 for a failed attempt
+        }
 
-        input.close();
+        player.setNumberOfGamesPlayed(player.getNumberOfGamesPlayed() + 1);
+        player.setLastPlayed(LocalDateTime.now());
     }
 }

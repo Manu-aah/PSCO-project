@@ -14,7 +14,7 @@ public class Menu {
                 fileHandling.loadData(player);
                 System.out.println("Welcome back, " + username + "! Your data has been loaded.");
             } else {
-                System.out.println("Welcome, " + username + "! Starting fresh.");
+                System.out.println("Welcome, " + username + "! Starting as a new player.");
             }
         } catch (IOException e) {
             System.out.println("Could not load player data: " + e.getMessage());
@@ -23,11 +23,11 @@ public class Menu {
 
         do {
             // Display Menu
-            System.out.println("====== GAME MENU ======");
-            System.out.println("1. Game 1");
-            System.out.println("2. Game 2");
-            System.out.println("3. Game 3");
-            System.out.println("4. Game 4 - Dice Blackjack");
+            System.out.println("------ || GAME MENU ||------");
+            System.out.println("1. Game 1- DICE PATTERNS CHALLENGE");
+            System.out.println("2. Game 2 - DICE GRID PUZZLE");
+            System.out.println("3. Game 3 - DICE CODEBREAKER");
+            System.out.println("4. Game 4 - DICE BLACKJACK");
             System.out.println("5. View player info");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
@@ -40,19 +40,39 @@ public class Menu {
             choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    System.out.println("Initializing Game 1.");
+                    System.out.println("Starting Game 1.");
+                    Game_1 game1 = new Game_1(player);
+                    game1.playGame(scanner);
+                    try {
+                        fileHandling.saveData(player);
+                    } catch (IOException e) {
+                        System.out.println("Error saving data: " + e.getMessage());
+                    }
                     break;
 
                 case 2:
-                    System.out.println("Initializing Game 2.");
+                    System.out.println("Starting Game 2.");
+                    Game_2 game2 = new Game_2(player);
+                    game2.play(scanner);
+                    try {
+                        fileHandling.saveData(player);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
 
                 case 3:
-                    System.out.println("Initializing Game 3.");
+                    System.out.println("Starting Game 3.");
+                    Game_3 game3 = new Game_3(player);
+                    game3.playGame(scanner);
+                    try {
+                        fileHandling.saveData(player);
+                    } catch (IOException e) {
+                        System.out.println("Error saving data: " + e.getMessage());
+                    }
                     break;
-
                 case 4:
-                    System.out.println("Initializing Game 4.\n");
+                    System.out.println("Starting Game 4.\n");
                     System.out.println("Please choose how much you want to stake: ");
                     while (!scanner.hasNextInt()) {
                         System.out.println("Invalid choice! Enter a valid number.");
