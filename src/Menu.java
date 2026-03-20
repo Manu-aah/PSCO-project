@@ -14,7 +14,7 @@ public class Menu {
                 fileHandling.loadData(player);
                 System.out.println("Welcome back, " + username + "! Your data has been loaded.");
             } else {
-                System.out.println("Welcome, " + username + "! Starting fresh.");
+                System.out.println("Welcome, " + username + "! Starting as a new player.");
             }
         } catch (IOException e) {
             System.out.println("Could not load player data: " + e.getMessage());
