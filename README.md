@@ -14,12 +14,10 @@ Coding Standards Discussion - naming conventions:
 
 • File organization: Keep all .java files in same folder for now 
 
- 
 
-Foundation 
+GAME RULES
 
 Game 1: Dice Patterns Challenge 
-
 
 Rules: 
 
