@@ -1,11 +1,10 @@
 import java.time.LocalDateTime;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Game_3 {
 
     private Player player;
-    private Random rand = new Random();
+    private Dice dice = new Dice();
     private final int MAX_ATTEMPTS = 10;
 
     public Game_3(Player player) {
@@ -17,7 +16,7 @@ public class Game_3 {
         int[] secretCode = new int[4];
 
         for (int i = 0; i < 4; i++) {
-            secretCode[i] = rand.nextInt(6) + 1;
+            secretCode[i] = dice.rollDice(1);
         }
         System.out.println("\n---- DICE CODEBREAKER ----");
         System.out.println("Guess the 4 dice numbers (1-6)");
@@ -98,11 +97,12 @@ public class Game_3 {
 
         if (!guessed) {
             System.out.print("You failed! The code was: ");
+
             for (int num : secretCode) {
                 System.out.print(num + " ");
             }
+
             System.out.println();
-            player.updateScores(2, 0); // score of 0 for a failed attempt
         }
 
         player.setNumberOfGamesPlayed(player.getNumberOfGamesPlayed() + 1);
