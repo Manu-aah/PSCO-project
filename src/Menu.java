@@ -14,7 +14,7 @@ public class Menu {
                 fileHandling.loadData(player);
                 System.out.println("Welcome back, " + username + "! Your data has been loaded.");
             } else {
-                System.out.println("Welcome, " + username + "!\nStarting as a new player you get 10 points!!!");
+                System.out.println("Welcome, " + username + "! Starting fresh.");
             }
         } catch (IOException e) {
             System.out.println("Could not load player data: " + e.getMessage());
@@ -43,11 +43,6 @@ public class Menu {
                     System.out.println("Starting Game 1.");
                     Game1 game1 = new Game1(player);
                     game1.playGame(scanner);
-                    try {
-                        fileHandling.saveData(player);
-                    } catch (IOException e) {
-                        System.out.println("Error saving data: " + e.getMessage());
-                    }
                     break;
 
                 case 2:
@@ -73,14 +68,18 @@ public class Menu {
                     break;
                 case 4:
                     System.out.println("Starting Game 4.\n");
-                    System.out.println("Please choose how much you want to stake: ");
-                    while (!scanner.hasNextInt()) {
-                        System.out.println("Invalid choice! Enter a valid number.");
-                        System.out.print("Enter your choice: ");
-                        scanner.next();
+                    int stake;
+                    while (true) {
+                        System.out.print("Please choose how much you want to stake (0 or more): ");
+                        while (!scanner.hasNextInt()) {
+                            System.out.println("Invalid input! Enter a valid number.");
+                            scanner.next();
+                        }
+                        stake = scanner.nextInt();
+                        if (stake >= 0) break;
+                        System.out.println("Stake cannot be negative.");
                     }
-                    int stake = scanner.nextInt();
-                    Game4 game4 = new Game4(stake,player);
+                    Game4 game4 = new Game4(stake, player);
                     game4.playGame(scanner);
                     try {
                         fileHandling.saveData(player);
