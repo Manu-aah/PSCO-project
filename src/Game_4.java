@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game_4 {
-    private static final int GAME_INDEX = 3;   // Game 4 = index 3 in the scores arrays
+    private static final int GAME_INDEX = 3;
     ArrayList<Integer> dealersDice;
     int dealerTotal;
     ArrayList<Integer> playerDice;
@@ -19,28 +19,34 @@ public class Game_4 {
     }
 
     public void playGame(Scanner scanner) {
-
         //stake is deducted before the game starts
         if (player.getPoints() < stake) {
             System.out.println("Not enough points to play! You need " + stake + " points but have " + player.getPoints());
             return;
         }
         player.removePoints(stake);
-        System.out.println("Stake of " + stake + " deducted. Points remaining: "
-                + player.getPoints());
+        System.out.println("Stake of " + stake + " deducted. Points remaining: " + player.getPoints());
 
         //initial deal
-        System.out.println("\n---- BLACKJACK ----");
-        System.out.println("Rolling dice...");
+        System.out.println("\n========== DICE BLACKJACK ==========");
+        System.out.println("Rolling dice...\n");
+
         playerDice.add(dice.rollDice(1));
         playerDice.add(dice.rollDice(1));
         playerTotal = playerDice.get(0) + playerDice.get(1);
-        System.out.println("Your dice:   " + playerDice.get(0) + " + " + playerDice.get(1) + " = " + playerTotal);
+
         //dealers roll
         dealersDice.add(dice.rollDice(1));
         dealersDice.add(dice.rollDice(1));
         dealerTotal = dealersDice.get(0) + dealersDice.get(1);
-        System.out.println("Dealer dice: " + dealersDice.get(0) + " + " + dealersDice.get(1) + " = " + dealerTotal);
+
+        System.out.println("Your dice:");
+        dice.printDice(playerDice);
+        System.out.println("Your total: " + playerTotal);
+
+        System.out.println("\nDealer dice:");
+        dice.printDice(dealersDice);
+        System.out.println("Dealer total: " + dealerTotal);
 
         //Player's turn
         int i = 2;
@@ -55,21 +61,23 @@ public class Game_4 {
 
             int choice = scanner.nextInt();
             if (choice == 1) {
-                System.out.println("HIT!");
-                playerDice.add(dice.rollDice(1));
-                int currentRoll = playerDice.get(i);
-                playerTotal += currentRoll;
-                System.out.println("You rolled: " + currentRoll + "  |  Player total: " + playerTotal);
+                System.out.println("\nHIT!");
+                int roll = dice.rollDice(1);
+                playerDice.add(roll);
+                playerTotal += roll;
+                System.out.println("You rolled:");
+                dice.printDie(roll);
+                System.out.println("Player total: " + playerTotal);
                 i++;
 
                 if (playerTotal > 21) {
-                    System.out.println("BUST! YOU LOSE!!!");
+                    System.out.println("\nBUST! YOU LOSE!!!");
                     resolveResult(-stake);
                     return;
                 }
 
             } else if (choice == 2) {
-                System.out.println("STAND!");
+                System.out.println("\nSTAND!");
                 dealersTurn();
 
                 if (dealerTotal > 21) {
@@ -77,22 +85,18 @@ public class Game_4 {
                     resolveResult(stake);
                     return;
                 } else if (playerTotal > dealerTotal) {
-                    System.out.println("YOU WIN! Your " + playerTotal
-                            + " beats dealer's " + dealerTotal + ". (+" + stake + ")");
+                    System.out.println("YOU WIN! Your " + playerTotal + " beats dealer's " + dealerTotal + ". (+" + stake + ")");
                     resolveResult(stake);
                     return;
                 } else if (dealerTotal > playerTotal) {
-                    System.out.println("YOU LOSE! Dealer's " + dealerTotal
-                            + " beats your " + playerTotal + ". (-" + stake + ")");
+                    System.out.println("YOU LOSE! Dealer's " + dealerTotal + " beats your " + playerTotal + ". (-" + stake + ")");
                     resolveResult(-stake);
                     return;
                 } else {
-                    System.out.println("TIE! Both scored " + playerTotal
-                            + ". Stake returned.");
+                    System.out.println("TIE! Both scored " + playerTotal + ". Stake returned.");
                     resolveResult(0);
                     return;
                 }
-
             } else {
                 System.out.println("Invalid choice! Please enter 1 or 2.");
             }
@@ -101,11 +105,10 @@ public class Game_4 {
 
     private int resolveResult(int result) {
         if (result > 0) {
-            player.addPoints(result * 2); // return stake + winnings (stake was already deducted)
+            player.addPoints(result * 2);
         } else if (result == 0) {
-            player.addPoints(stake);      // tie: return the stake
+            player.addPoints(stake);
         }
-        // loss: nothing added — stake was already deducted upfront
 
         player.setNumberOfGamesPlayed(player.getNumberOfGamesPlayed() + 1);
         player.updateScores(GAME_INDEX, result);
@@ -127,14 +130,17 @@ public class Game_4 {
 
         int i = 2;
         while (true) {
-            dealersDice.add(dice.rollDice(1));
-            dealerTotal += dealersDice.get(i);
-            System.out.println("Dealer rolled: " + dealersDice.get(i) + "  |  Dealer total: " + dealerTotal);
+            int roll = dice.rollDice(1);
+            dealersDice.add(roll);
+            dealerTotal += roll;
+            System.out.println("Dealer rolled:");
+            dice.printDie(roll);
+            System.out.println("Dealer total: " + dealerTotal);
             i++;
 
             if (dealerTotal > 21 || dealerTotal >= 17) {
                 if (dealerTotal <= 21) System.out.println("Dealer stands.");
-                return; // gets out of the loop, bust
+                return;
             }
         }
     }
