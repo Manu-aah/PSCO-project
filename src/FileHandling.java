@@ -4,11 +4,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class File_Handling {
+public class FileHandling {
     private String path = "src/Player_Data.txt";
 
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+
+    // Saves the player's current data. if the player already exists in the file their line is
+    // replaced, otherwise a new line is appended
     public void saveData(Player player) throws IOException {
         player.setLastPlayed(LocalDateTime.now());
         String updatedLine = buildLine(player);
@@ -48,7 +51,7 @@ public class File_Handling {
         writer.close();
     }
 
-    //Loads data for the given player by matching their username in the file
+    // Loads data for the given player by matching their username in the file
     public void loadData(Player player) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(path));
         String line;
@@ -68,7 +71,7 @@ public class File_Handling {
         throw new IllegalArgumentException("No saved data found for username: " + player.getUsername());
     }
 
-    //Checks whether a username already has a saved line in the file
+    // Checks whether a username already has a saved line in the file
     public boolean playerExists(String username) throws IOException {
         File file = new File(path);
         if (!file.exists()) return false;
@@ -85,6 +88,8 @@ public class File_Handling {
         return false;
     }
 
+    // Builds a CSV line from the player's current data with username, points, games played,
+    // last played, then highest scores and recent scores for each game
     private String buildLine(Player player) {
         String line = player.getUsername() + "," + player.getPoints() + "," + player.getNumberOfGamesPlayed() + "," + player.getLastPlayedFormatted();
 
@@ -97,7 +102,8 @@ public class File_Handling {
         return line;
     }
 
-    //Parses a split CSV line back into the Player object
+    // Parses a split CSV line back into the Player object, restoring all fields including
+    // highest and recent scores for each game
     private void parseLine(String[] data, Player player) {
         player.setPoints(Integer.parseInt(data[1]));
         player.setNumberOfGamesPlayed(Integer.parseInt(data[2]));

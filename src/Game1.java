@@ -1,14 +1,16 @@
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Scanner;
-public class Game_1 {
+
+public class Game1 {
     private Player player;
     private Dice dice = new Dice();
 
-    public Game_1(Player player) {
+    public Game1(Player player) {
         this.player = player;
     }
 
+    // This is the Main game loop, it shows instructions, handles rolling and re-rolling, then scores the final hand
     public void playGame(Scanner scanner) {
         System.out.println("\n---- DICE PATTERNS CHALLENGE ----");
         System.out.println("You will roll 5 dice and try to match the best possible pattern.");
@@ -17,28 +19,33 @@ public class Game_1 {
         System.out.println("Enter the positions of the dice you want to re-roll (e.g. 1 3 5).");
         System.out.println();
         System.out.println("Scoring:");
-        System.out.println("  Five of a Kind  = 50 pts");
-        System.out.println("  Four of a Kind  = 40 pts");
-        System.out.println("  Full House      = 35 pts");
-        System.out.println("  Straight (1-5 or 2-6) = 30 pts");
-        System.out.println("  Three of a Kind = 25 pts");
-        System.out.println("  Two Pairs       = 20 pts");
-        System.out.println("  One Pair        = 10 pts");
+        System.out.println("  Five of a Kind       = 50 pts");
+        System.out.println("  Four of a Kind       = 40 pts");
+        System.out.println("  Full House           = 35 pts");
+        System.out.println("  Straight (1-5 or 2-6)= 30 pts");
+        System.out.println("  Three of a Kind      = 25 pts");
+        System.out.println("  Two Pairs            = 20 pts");
+        System.out.println("  One Pair             = 10 pts");
         System.out.println("Good luck!");
 
         scanner.nextLine(); // clear leftover newline from menu's nextInt()
 
         System.out.println("\n=== ROLL YOUR DICE ===");
         int[] diceValues = rollDice();
-        System.out.print("Dice: ");
-        printDice(diceValues);
+        System.out.println("  1       2       3       4       5  ");
+        dice.printDice(diceValues);
 
         int remainingRolls = 2;
         while (remainingRolls > 0) {
-            System.out.print("\nWould you like to re-roll? (y/n): ");
-            String choice = scanner.nextLine().trim();
+            String choice;
+            while (true) {
+                System.out.print("\nWould you like to re-roll? (y/n): ");
+                choice = scanner.nextLine().trim().toLowerCase();
+                if (choice.equals("y") || choice.equals("n")) break;
+                System.out.println("Invalid input. Please enter y or n.");
+            }
 
-            if (!choice.equalsIgnoreCase("y")) {
+            if (choice.equals("n")) {
                 System.out.println("Keeping all dice!");
                 break;
             }
@@ -51,7 +58,6 @@ public class Game_1 {
                 break;
             }
 
-            // Boolean array to track which positions to re-roll (index 0 = die 1)
             boolean[] toReroll = new boolean[5];
             String[] parts = input.split("\\s+");
             boolean anyValid = false;
@@ -80,15 +86,17 @@ public class Game_1 {
             }
 
             remainingRolls--;
-            System.out.print("New dice: ");
-            printDice(diceValues);
+            System.out.println("New dice:");
+            System.out.println("  1       2       3       4       5  ");
+            dice.printDice(diceValues);
             System.out.println("Re-rolls remaining: " + remainingRolls);
         }
 
         int totalScore = evaluateScore(diceValues);
         System.out.println("\n=== GAME OVER ===");
-        System.out.print("Final dice: ");
-        printDice(diceValues);
+        System.out.println("Final dice:");
+        System.out.println("  1       2       3       4       5  ");
+        dice.printDice(diceValues);
         System.out.println("Hand: " + evaluateHandName(diceValues));
         System.out.println("Score: " + totalScore);
 
@@ -99,6 +107,7 @@ public class Game_1 {
         System.out.println("Total points: " + player.getPoints());
     }
 
+    // Rolls 5 dice and returns their values as an array
     private int[] rollDice() {
         int[] diceValues = new int[5];
         for (int i = 0; i < 5; i++) {
@@ -107,20 +116,14 @@ public class Game_1 {
         return diceValues;
     }
 
-    private void printDice(int[] diceValues) {
-        for (int i = 0; i < diceValues.length; i++) {
-            System.out.print("[ " + diceValues[i] + " ]");
-            if (i < diceValues.length - 1) System.out.print(" ");
-        }
-        System.out.println();
-    }
-
+    // Returns a frequency array where index = face value (1-6) and value = how many times it appears
     private int[] getFrequency(int[] diceValues) {
-        int[] freq = new int[7]; // index 0 unused, 1-6 for dice faces
+        int[] freq = new int[7];
         for (int die : diceValues) freq[die]++;
         return freq;
     }
 
+    // Returns the name of the hand based on the score
     private String evaluateHandName(int[] diceValues) {
         int score = classify(diceValues);
         if (score == 50) return "Five of a Kind";
@@ -133,10 +136,12 @@ public class Game_1 {
         return "No match";
     }
 
+    // Returns the score for the current dice values
     private int evaluateScore(int[] diceValues) {
         return classify(diceValues);
     }
 
+    // Checks the dice against every pattern from highest to lowest and returns the matching score
     private int classify(int[] diceValues) {
         int[] freq = getFrequency(diceValues);
         boolean has3 = false;

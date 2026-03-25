@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Game_4 {
+public class Game4 {
     private static final int GAME_INDEX = 3;
     ArrayList<Integer> dealersDice;
     int dealerTotal;
@@ -11,13 +11,14 @@ public class Game_4 {
     Dice dice = new Dice();
     Player player;
 
-    public Game_4(int stake, Player player) {
+    public Game4(int stake, Player player) {
         this.stake = stake;
         this.player = player;
         playerDice = new ArrayList<>();
         dealersDice = new ArrayList<>();
     }
 
+    // Main game loop
     public void playGame(Scanner scanner) {
         //stake is deducted before the game starts
         if (player.getPoints() < stake) {
@@ -103,13 +104,15 @@ public class Game_4 {
         }
     }
 
+    // Handles the outcome then adds winnings if the player won, returns stake on tie, nothing on loss
+    // Then updates the player's game count and score record
     private int resolveResult(int result) {
         if (result > 0) {
-            player.addPoints(result * 2);
+            player.addPoints(result * 2); // return stake + winnings (stake was already deducted)
         } else if (result == 0) {
-            player.addPoints(stake);
+            player.addPoints(stake);      // tie: return the stake
         }
-
+        // loss: nothing added as stake was already deducted upfront
         player.setNumberOfGamesPlayed(player.getNumberOfGamesPlayed() + 1);
         player.updateScores(GAME_INDEX, result);
 
