@@ -45,7 +45,7 @@ public class Game3 {
                     break;
                 }
 
-                String[] parts = line.split("\\s+");
+                String[] parts = line.split(" ");
 
                 if (parts.length != 4) {
                     System.out.println("You must enter exactly 4 numbers.");
